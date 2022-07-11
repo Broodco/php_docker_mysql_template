@@ -1,4 +1,4 @@
-PHPDocker.io generated environment - Modified by
+PHPDocker.io generated environment - Modified by Broodco
 ==================================
 
 Ensure the webserver config on `phpdocker/nginx/nginx.conf` is correct for your project. PHPDocker.io will have
