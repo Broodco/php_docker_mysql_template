@@ -1,10 +1,5 @@
-PHPDocker.io generated environment
+PHPDocker.io generated environment - Modified by
 ==================================
-
-# Add to your project #
-
-Simply, unzip the file into your project, this will create `docker-compose.yml` on the root of your project and a folder
-named `phpdocker` containing nginx and php-fpm config for it.
 
 Ensure the webserver config on `phpdocker/nginx/nginx.conf` is correct for your project. PHPDocker.io will have
 customised this file according to the front controller location relative to the docker-compose file you chose on the
@@ -13,6 +8,18 @@ generator (by default `public/index.php`).
 Note: you may place the files elsewhere in your project. Make sure you modify the locations for the php-fpm dockerfile,
 the php.ini overrides and nginx config on `docker-compose.yml` if you do so.
 
+# How to update the configuration #
+
+In the `docker-compose.yml` file, you can find configuration lines about the mysql container and associated database.
+You can, and should, update the database credentials and db name by simply modifying those four lines : 
+
+```
+- MYSQL_ROOT_PASSWORD=pass1234
+- MYSQL_DATABASE=php-playground
+- MYSQL_USER=playground-user
+- MYSQL_PASSWORD=playground-pass1234
+```
+
 # How to run #
 
 Dependencies:
@@ -20,7 +27,7 @@ Dependencies:
 * docker. See [https://docs.docker.com/engine/installation](https://docs.docker.com/engine/installation)
 * docker-compose. See [docs.docker.com/compose/install](https://docs.docker.com/compose/install/)
 
-Once you're done, simply `cd` to your project and run `docker-compose up -d`. This will initialise and start all the
+Once you're done, simply `cd` to your project and run `docker compose up`. This will initialise and start all the
 containers, then leave them running in the background.
 
 ## Services exposed outside your environment ##
@@ -32,6 +39,7 @@ Service|Address outside containers
 -------|--------------------------
 Webserver|[localhost:3000](http://localhost:3000)
 MySQL|**host:** `localhost`; **port:** `3002`
+phpMyAdmin|[localhost:8080](http://localhost:8080)
 
 ## Hosts within your environment ##
 
@@ -44,7 +52,8 @@ MySQL|mysql|3306 (default)
 
 # Docker compose cheatsheet #
 
-**Note:** you need to cd first to where your docker-compose.yml file lives.
+**Notes:**  You need to cd first to where your docker-compose.yml file lives, and depending on your docker compose version,
+you might need to write `docker compose` instead of `docker-compose`.
 
 * Start containers in the background: `docker-compose up -d`
 * Start containers on the foreground: `docker-compose up`. You will see a stream of logs for every container running.
@@ -75,70 +84,7 @@ using `docker exec -it -u $(id -u):$(id -g) CONTAINER_NAME COMMAND` to force you
 this will only work if your host OS is Linux, not mac. Follow a couple of simple rules and save yourself a world of
 hurt.
 
-* Run composer outside of the php container, as doing so would install all your dependencies owned by `root` within your
+* Run composer outside the php container, as doing so would install all your dependencies owned by `root` within your
   vendor folder.
 * Run commands (ie Symfony's console, or Laravel's artisan) straight inside of your container. You can easily open a
   shell as described above and do your thing from there.
-
-# Simple basic Xdebug configuration with integration to PHPStorm
-
-## Xdebug 2
-
-To configure **Xdebug 2** you need add these lines in php-fpm/php-ini-overrides.ini:
-
-### For linux:
-
-```
-xdebug.remote_enable = 1
-xdebug.remote_connect_back = 1
-xdebug.remote_autostart = 1
-```
-
-### For macOS and Windows:
-
-```
-xdebug.remote_enable = 1
-xdebug.remote_host = host.docker.internal
-xdebug.remote_autostart = 1
-```
-
-## Xdebug 3
-
-To configure **Xdebug 3** you need add these lines in php-fpm/php-ini-overrides.ini:
-
-### For linux:
-
-```
-xdebug.mode = debug
-xdebug.remote_connect_back = true
-xdebug.start_with_request = yes
-```
-
-### For macOS and Windows:
-
-```
-xdebug.mode = debug
-xdebug.remote_host = host.docker.internal
-xdebug.start_with_request = yes
-```
-
-## Add the section “environment” to the php-fpm service in docker-compose.yml:
-
-```
-environment:
-  PHP_IDE_CONFIG: "serverName=Docker"
-```
-
-### Create a server configuration in PHPStorm:
-
-* In PHPStorm open Preferences | Languages & Frameworks | PHP | Servers
-* Add new server
-* The “Name” field should be the same as the parameter “serverName” value in “environment” in docker-compose.yml (i.e. *
-  Docker* in the example above)
-* A value of the "port" field should be the same as first port(before a colon) in "webserver" service in
-  docker-compose.yml
-* Select "Use path mappings" and set mappings between a path to your project on a host system and the Docker container.
-* Finally, add “Xdebug helper” extension in your browser, set breakpoints and start debugging
-
-
-
