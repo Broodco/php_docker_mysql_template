@@ -32,8 +32,7 @@ services:
             - './phpdocker/php-fpm/php-ini-overrides.ini:/etc/php/8.1/fpm/conf.d/99-overrides.ini'
 
     phpmyadmin:
-        image: phpmyadmin/phpmyadmin
-        container_name: pma
+        image: 'phpmyadmin/phpmyadmin'
         links:
             - mysql
         environment:
@@ -42,7 +41,6 @@ services:
             PMA_ARBITRARY: 1
             PMA_USER: "playground-user"
             PMA_PASSWORD: "playground-pass1234"
-        restart: always
         depends_on:
             - mysql
         ports:
