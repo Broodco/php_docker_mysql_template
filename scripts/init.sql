@@ -1,2 +1,0 @@
-GRANT ALL PRIVILEGES ON `%`.* TO 'playground-user'@'%';
-FLUSH PRIVILEGES;
